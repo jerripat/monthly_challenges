@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponseNotFound,HttpResponseRedirect,HttpResponse
 from django.urls import reverse
 
+
 monthly_challenges = {
     "january": "Eat no meat for the entire month",
     "february": "Walk for at least 20 minutes every day!",
@@ -9,23 +10,28 @@ monthly_challenges = {
     "april": " Eat no meat for the entire month",
     "may": "Walk for at least 20 minutes every day!",
     "june": "Learn Django for at least 20 minutes every day!",
-    "july": " Eat no meat for the entire month",
+    "july":  None,
     "august": "Walk for at least 20 minutes every day!",
     "september": "Learn Django for at least 20 minutes every day!",
     "october": " Eat no meat for the entire month",
     "november": "Walk for at least 20 minutes every day!",
-    "december": "Learn Django for at least 20 minutes every day!",
+    "december": None,
 }
 def index(request):
-    list_items = ("")
+    #list_items = ("")
     months = list(monthly_challenges.keys())
-    for month in months:
-        capitalized_month = month.capitalize()
-        month_path = reverse('month-challenge', args=[month])
-        list_items += f"<li><a href=\"{month_path}\">{capitalized_month}</a></li>"
+    return render(request,"challenges/index.html",{
+        "months": months,
 
-    response_data = f"<ul><h1>{list_items}</h1></ul>"
-    return HttpResponse(response_data)
+    })
+
+    # for month in months:
+    #     capitalized_month = month.capitalize()
+    #     month_path = reverse('month-challenge', args=[month])
+    #     list_items += f"<li><a href=\"{month_path}\">{capitalized_month}</a></li>"
+    #
+    # response_data = f"<ul><h1>{list_items}</h1></ul>"
+    # return HttpResponse(response_data)
 
 def monthly_challenge_by_number(request, month):
     months = list(monthly_challenges.keys())
@@ -37,7 +43,11 @@ def monthly_challenge_by_number(request, month):
 def monthly_challenge(request, month):
     try:
         challenge_text = monthly_challenges[month]
-        return HttpResponse(f"<h2>{challenge_text}<h2>")
+        return render(request,"challenges/challenge.html",{
+            "text": challenge_text,
+            "key": month.capitalize(),
+        })
+
     except:
         return HttpResponseNotFound("<h1>This month is not supported</h1>")
 
